@@ -42,7 +42,7 @@ class CordisProject:
     # self.default_max_page_number = 50
     self.default_items_per_page = 100 # 50
 
-    self.partial_scan_page_limit = 4
+    self.partial_scan_page_limit = 2
     self.full_scan_page_limit = 50
 
     self.scan_in_progress=False

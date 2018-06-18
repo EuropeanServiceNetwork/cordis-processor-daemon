@@ -2,18 +2,14 @@ import MySQLdb
 import rethinkdb
 
 class DbConnections:
-    def __init__(self, my_logger):
+    def __init__(self, my_logger, config):
       self.logger = my_logger
-      self.mariadb_username = "ercv2"
-      self.mariadb_passwd ="theMagicalPassword"
-      self.mariadb_host = "localhost"
-      self.mariadb_database= "ercv2"
-      self.mariadb_port =  ""
+      self.db_config = config['database']
       self.flock = {}
       self.db_cursors = {}
 
     def connect_to_db(self,database_name="mariadb"):
-      self.flock[database_name] = MySQLdb.connect(user=self.mariadb_username,passwd=self.mariadb_passwd,db=self.mariadb_database, charset='utf8', init_command='SET NAMES UTF8')
+      self.flock[database_name] = MySQLdb.connect(user=self.db_config['mariadb_username'],passwd=self.db_config['mariadb_passwd'],db=self.db_config['mariadb_database'], charset='utf8', init_command='SET NAMES UTF8')
       self.flock[database_name].autocommit(True)
 
     def close_connection_to_db(self, database_name="mariadb"):
@@ -65,7 +61,7 @@ class DbConnections:
       try:
         self.flock['r'] = rethinkdb
         # self.flock['r'].connect( "localhost", 28015).repl().reconnect()
-        self.flock['r'].connect( host='localhost',port='28015',user='admin',password='anotherpasswordbutforrethinkdb').repl().reconnect()
+        self.flock['r'].connect( host=self.db_config['rethinkdb_host'],port=self.db_config['rethinkdb_port'],user=self.db_config['rethinkdb_username'], password=self.db_config['rethinkdb_passwd']).repl().reconnect()
 
         print("connected to RethinkDB!")
       except Exception as e:

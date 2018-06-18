@@ -14,20 +14,26 @@ import cordisProjectProcessor
 
 from pprint import pprint
 
-import logging
-import logging.handlers
+import logging , logging.handlers
 from logging.handlers import TimedRotatingFileHandler #RotatingFileHandler
+
+import configparser
 
 class handler_cordis_api:
     def __init__(self,app):
-        self.app = app
+        self.running_in_mode = 'production' ####### MODE OPTIONS: production|testing
         self.last_run_on_human_friendly = time.strftime("%d/%m/%Y , %H:%M:%S")
         self.last_run_on = time.time()
-        self.logger = self.set_up_logging()
+        self.config = configparser.ConfigParser()
+        self.config.read(self.running_in_mode + '.conf')
+        self.logger = self.set_up_logging(self.config)
+
+        self.app = app
+
 
         self.cordis_projects = ['h2020', 'other']
         self.max_retries_per_project = 5
-        self.db_connections = dbConnections.DbConnections(self.logger)
+        self.db_connections = dbConnections.DbConnections(self.logger,self.config)
         self.db_connections.connect_to_db("mariadb")
         self.db_connections.connect_to_rethink()
         self.cordisProject = cordisProjectProcessor.CordisProject(self.db_connections, self.app,self.logger)
@@ -35,8 +41,8 @@ class handler_cordis_api:
         self.init_rethinkdb()
         # self.db_connections.connect()
 
-    def set_up_logging(self):
-      serverlog_path ="/var/log/cordis_processor"
+    def set_up_logging(self,config):
+      serverlog_path =self.config['logger']['path']
       # File handler for /var/log/some.log
       #serverlog = logging.FileHandler('%s_%s.log' %(serverlog_path,time.strftime("%Y-%m")))
       #serverlog.setLevel(logging.DEBUG)
