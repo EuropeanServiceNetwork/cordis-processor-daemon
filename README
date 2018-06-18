@@ -1,0 +1,34 @@
+Before you can run the daemon you need to install the following libraries on the server,
+for example for Debian / Ubuntu:
+
+apt install libprotobuf10 mysql-connector-python
+
+add repository for rethinkDB , then :
+apt install rethinkdb
+
+change port of rethinkdb to 5222 , if not accessible, otherwise you can access it there:
+  http://123.123.123.123:5222
+-------------------------------------------------------------------------------
+
+python libs to install :
+ - sortedcontainers
+ - deepdiff
+ - pprint
+ - pycurl
+ - xmltodict
+ - rethinkdb
+ - pycountry
+ - requests
+ - grequests
+
+with pip3 for example:
+
+pip3 install sortedcontainers deepdiff pprint pycurl xmltodict rethinkdb pycountry grequests
+-------------------------------------------------------------------------------
+
+In order to start it at boot or with services (like systemctl, serives) ,
+copy the file cordis_processor__init.d to /etc/init.d:
+
+cp -pr cordis_processor__init.d /etc/init.d/cordisProcessor
+-------------------------------------------------------------------------------
+
